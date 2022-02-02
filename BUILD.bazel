@@ -1,0 +1,27 @@
+# Add rules here to build your software
+# See https://docs.bazel.build/versions/main/build-ref.html#BUILD_files
+load("@npm//@aspect-build/webpack:index.bzl", "webpack_bundle")
+load("@build_bazel_rules_nodejs//:index.bzl", "js_library")
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+
+ts_project(
+    name = "tsc",
+    deps = [
+        "@npm//@types/qs",
+        "@npm//qs",
+    ],
+)
+
+js_library(
+    name = "lib",
+    deps = [":tsc"],
+)
+
+webpack_bundle(
+    name = "bundle",
+    data = [
+        ":lib",
+    ],
+    entry_point = "index.js",
+    webpack_config = ":webpack.config.js",
+)
